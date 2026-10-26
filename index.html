@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>八字命理速查秘笈與完整排盤工具</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Noto Serif TC"', 'serif'],
+            sans: ['"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            wood: '#2e7d32',
+            fire: '#c62828',
+            earth: '#d84315',
+            metal: '#f57f17',
+            water: '#1565c0',
+            paper: '#fcfaf2',
+            ink: '#1c1917',
+            amberGold: '#b45309'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: #f4f1ea;
+      color: #292524;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #e7e5e4;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #a8a29e;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #78716c;
+    }
+    .active-tab {
+      border-bottom: 3px solid #9a3412;
+      color: #9a3412;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#f5f2eb] text-stone-800">
+
+  <!-- Header Section -->
+  <header class="bg-stone-900 text-amber-100 shadow-lg sticky top-0 z-50 border-b border-amber-700/40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full bg-amber-700/80 text-amber-100 flex items-center justify-center font-serif text-xl font-bold border border-amber-500 shadow-inner">
+          卦
+        </div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-black font-serif tracking-wide text-amber-200">八字命理全功能排盤與速查</h1>
+          <p class="text-xs text-stone-400">四柱八字 · 十神 · 十二長生 · 神煞 · 旬空 · 大運流年流月流日對照</p>
+        </div>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <div class="relative flex-1 max-w-xs">
+        <input type="text" id="globalSearch" onkeyup="handleGlobalSearch()" placeholder="搜尋關鍵字（如：天乙貴人、甲木、正印）..." 
+          class="w-full bg-stone-800 text-stone-200 placeholder-stone-500 text-xs rounded-full py-1.5 pl-8 pr-4 border border-stone-700 focus:outline-none focus:border-amber-500">
+        <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-stone-500 text-xs"></i>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-stone-800 border-t border-stone-700 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-2 flex whitespace-nowrap text-sm font-medium text-stone-300">
+        <button onclick="switchTab('paipan')" id="tab-paipan" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5 active-tab">
+          <i class="fa-solid fa-calendar-days text-amber-500"></i> 八字完整排盤與流年對照
+        </button>
+        <button onclick="switchTab('shishen')" id="tab-shishen" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-users text-amber-600"></i> 十神與六親
+        </button>
+        <button onclick="switchTab('tiangan')" id="tab-tiangan" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-notes-medical text-amber-600"></i> 五行健康與病理
+        </button>
+        <button onclick="switchTab('wuxing')" id="tab-wuxing" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-tree text-amber-600"></i> 五行類象與職業
+        </button>
+        <button onclick="switchTab('yongshen')" id="tab-yongshen" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-scroll text-amber-600"></i> 滴天髓·十二月用神
+        </button>
+        <button onclick="switchTab('changsheng')" id="tab-changsheng" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-arrows-spin text-amber-600"></i> 十二長生對照
+        </button>
+        <button onclick="switchTab('shensha')" id="tab-shensha" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-amber-600"></i> 神煞速查
+        </button>
+        <button onclick="switchTab('helper')" id="tab-helper" class="px-4 py-2.5 hover:text-amber-300 transition flex items-center gap-1.5 bg-amber-900/30 text-amber-300">
+          <i class="fa-solid fa-compass text-amber-400"></i> 快速論命對照助手
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+    <!-- 0. 八字線上排盤系統 -->
+    <section id="sec-paipan" class="space-y-6">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm flex items-start gap-3">
+        <i class="fa-solid fa-calendar-days text-amber-800 text-xl mt-0.5"></i>
+        <div>
+          <h2 class="font-bold font-serif text-stone-900 text-lg">線上八字完整排盤與歲運流年對照</h2>
+          <p class="text-xs text-stone-600">自動計算本命四柱、藏干十神、十二長生、神煞、旬空，並即時對照當前「流年、流月、流日」之運勢干支。</p>
+        </div>
+      </div>
+
+      <!-- 排盤輸入表單 -->
+      <div class="bg-white rounded-2xl p-6 shadow-md border border-stone-200">
+        <h3 class="font-serif font-bold text-base text-stone-800 mb-3"><i class="fa-solid fa-user-pen text-amber-700 mr-2"></i>輸入命主資料</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">姓名 / 標籤</label>
+            <input type="text" id="paipanName" placeholder="命主姓名" value="命主" class="w-full bg-stone-50 border border-stone-300 rounded-lg p-2 text-sm focus:outline-none focus:border-amber-700">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">性別</label>
+            <select id="paipanGender" class="w-full bg-stone-50 border border-stone-300 rounded-lg p-2 text-sm focus:outline-none focus:border-amber-700">
+              <option value="乾造">乾造 (男)</option>
+              <option value="坤造">坤造 (女)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">出生公曆日期</label>
+            <input type="date" id="paipanDate" class="w-full bg-stone-50 border border-stone-300 rounded-lg p-2 text-sm focus:outline-none focus:border-amber-700">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">出生時辰 (24小時制)</label>
+            <select id="paipanHour" class="w-full bg-stone-50 border border-stone-300 rounded-lg p-2 text-sm focus:outline-none focus:border-amber-700">
+              <option value="0">子時 (23:00 - 00:59)</option>
+              <option value="1">丑時 (01:00 - 02:59)</option>
+              <option value="3">寅時 (03:00 - 04:59)</option>
+              <option value="5">卯時 (05:00 - 06:59)</option>
+              <option value="7">辰時 (07:00 - 08:59)</option>
+              <option value="9">巳時 (09:00 - 10:59)</option>
+              <option value="11">午時 (11:00 - 12:59)</option>
+              <option value="13">未時 (13:00 - 14:59)</option>
+              <option value="15">申時 (15:00 - 16:59)</option>
+              <option value="17">酉時 (17:00 - 18:59)</option>
+              <option value="19">戌時 (19:00 - 20:59)</option>
+              <option value="21">亥時 (21:00 - 22:59)</option>
+            </select>
+          </div>
+        </div>
+
+        <h3 class="font-serif font-bold text-base text-stone-800 mb-3 border-t border-stone-200 pt-3"><i class="fa-solid fa-clock text-amber-700 mr-2"></i>流年流月流日對照時間 (預設為今日)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-bold text-stone-700 mb-1">對照公曆日期</label>
+            <input type="date" id="targetDate" class="w-full bg-stone-50 border border-stone-300 rounded-lg p-2 text-sm focus:outline-none focus:border-amber-700">
+          </div>
+          <div class="flex items-end">
+            <button onclick="generateBaziChart()" class="w-full py-2.5 bg-amber-800 hover:bg-amber-900 text-amber-50 font-bold font-serif rounded-xl shadow transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-compass"></i> 立即開始排盤與流年對照
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 排盤結果展示 -->
+      <div id="paipanResult" class="hidden space-y-6">
+
+        <!-- 1. 當前歲運流年流月流日速覽 -->
+        <div class="bg-amber-900 text-amber-100 p-5 rounded-2xl shadow-lg border border-amber-700/60">
+          <div class="flex items-center justify-between border-b border-amber-700/80 pb-2 mb-3">
+            <h3 class="font-serif font-bold text-lg text-amber-200 flex items-center gap-2">
+              <i class="fa-solid fa-bolt text-amber-400"></i> 對照歲運（當前流年 · 流月 · 流日）
+            </h3>
+            <span id="targetSolarStr" class="text-xs text-amber-300 font-mono"></span>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-800/50">
+              <span class="text-xs text-amber-300 block mb-1">【當前流年】</span>
+              <span id="liunianGanZhi" class="font-serif text-2xl font-black text-amber-100"></span>
+              <span id="liunianShishen" class="block text-xs text-amber-300/80 mt-1"></span>
+            </div>
+            <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-800/50">
+              <span class="text-xs text-amber-300 block mb-1">【當前流月】</span>
+              <span id="liuyueGanZhi" class="font-serif text-2xl font-black text-amber-100"></span>
+              <span id="liuyueShishen" class="block text-xs text-amber-300/80 mt-1"></span>
+            </div>
+            <div class="bg-amber-950/60 p-3 rounded-xl border border-amber-800/50">
+              <span class="text-xs text-amber-300 block mb-1">【當前流日】</span>
+              <span id="liuriGanZhi" class="font-serif text-2xl font-black text-amber-100"></span>
+              <span id="liuriShishen" class="block text-xs text-amber-300/80 mt-1"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. 本命四柱八字圖表 -->
+        <div class="bg-stone-900 text-amber-100 p-6 rounded-2xl shadow-xl border border-amber-800/40 space-y-6">
+          <div class="flex flex-wrap justify-between items-center border-b border-amber-800/60 pb-3 gap-2">
+            <div>
+              <span id="chartName" class="text-2xl font-bold font-serif text-amber-300 mr-2"></span>
+              <span id="chartGender" class="text-sm bg-amber-800/60 px-2 py-0.5 rounded text-amber-100"></span>
+            </div>
+            <div id="chartSolarDate" class="text-xs text-stone-400"></div>
+          </div>
+
+          <!-- 四柱八字表格 -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-center border-collapse">
+              <thead>
+                <tr class="text-stone-400 text-xs border-b border-stone-800">
+                  <th class="p-2">項目</th>
+                  <th class="p-2 text-amber-400 font-bold">年柱</th>
+                  <th class="p-2 text-amber-400 font-bold">月柱</th>
+                  <th class="p-2 text-amber-400 font-bold">日柱 (日主)</th>
+                  <th class="p-2 text-amber-400 font-bold">時柱</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-800 text-sm">
+                <!-- 十神 (天干) -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">主事十神</td>
+                  <td id="ss-year" class="p-2 text-amber-300/90 font-medium"></td>
+                  <td id="ss-month" class="p-2 text-amber-300/90 font-medium"></td>
+                  <td class="p-2 font-bold text-amber-400 bg-amber-950/40 rounded">日主 (元男/元女)</td>
+                  <td id="ss-hour" class="p-2 text-amber-300/90 font-medium"></td>
+                </tr>
+                <!-- 天干 -->
+                <tr class="font-serif text-2xl font-black">
+                  <td class="p-2 text-xs text-stone-500 font-sans font-bold">天干</td>
+                  <td id="stem-year" class="p-2 text-amber-100"></td>
+                  <td id="stem-month" class="p-2 text-amber-100"></td>
+                  <td id="stem-day" class="p-2 text-amber-300 bg-amber-900/30 rounded border border-amber-500/40"></td>
+                  <td id="stem-hour" class="p-2 text-amber-100"></td>
+                </tr>
+                <!-- 地支 -->
+                <tr class="font-serif text-2xl font-black">
+                  <td class="p-2 text-xs text-stone-500 font-sans font-bold">地支</td>
+                  <td id="branch-year" class="p-2 text-amber-100"></td>
+                  <td id="branch-month" class="p-2 text-amber-100"></td>
+                  <td id="branch-day" class="p-2 text-amber-100"></td>
+                  <td id="branch-hour" class="p-2 text-amber-100"></td>
+                </tr>
+                <!-- 藏干 -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">地支藏干</td>
+                  <td id="cg-year" class="p-2 text-xs text-stone-300"></td>
+                  <td id="cg-month" class="p-2 text-xs text-stone-300"></td>
+                  <td id="cg-day" class="p-2 text-xs text-stone-300"></td>
+                  <td id="cg-hour" class="p-2 text-xs text-stone-300"></td>
+                </tr>
+                <!-- 藏干十神 -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">副星十神</td>
+                  <td id="cgss-year" class="p-2 text-[11px] text-stone-400"></td>
+                  <td id="cgss-month" class="p-2 text-[11px] text-stone-400"></td>
+                  <td id="cgss-day" class="p-2 text-[11px] text-stone-400"></td>
+                  <td id="cgss-hour" class="p-2 text-[11px] text-stone-400"></td>
+                </tr>
+                <!-- 十二長生 -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">十二長生</td>
+                  <td id="cs-year" class="p-2 text-xs text-emerald-400 font-semibold"></td>
+                  <td id="cs-month" class="p-2 text-xs text-emerald-400 font-semibold"></td>
+                  <td id="cs-day" class="p-2 text-xs text-emerald-400 font-semibold"></td>
+                  <td id="cs-hour" class="p-2 text-xs text-emerald-400 font-semibold"></td>
+                </tr>
+                <!-- 旬空 (空亡) -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">旬空狀態</td>
+                  <td id="kong-year" class="p-2 text-xs text-rose-300"></td>
+                  <td id="kong-month" class="p-2 text-xs text-rose-300"></td>
+                  <td id="kong-day" class="p-2 text-xs text-stone-500">（日柱基準）</td>
+                  <td id="kong-hour" class="p-2 text-xs text-rose-300"></td>
+                </tr>
+                <!-- 神煞 -->
+                <tr>
+                  <td class="p-2 text-xs text-stone-500 font-bold">柱內神煞</td>
+                  <td id="sha-year" class="p-2 text-xs text-amber-200/90 leading-tight"></td>
+                  <td id="sha-month" class="p-2 text-xs text-amber-200/90 leading-tight"></td>
+                  <td id="sha-day" class="p-2 text-xs text-amber-200/90 leading-tight"></td>
+                  <td id="sha-hour" class="p-2 text-xs text-amber-200/90 leading-tight"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- 日柱旬空提醒 -->
+          <div class="bg-stone-800/80 rounded-xl p-3 text-xs border border-stone-700 flex items-center justify-between">
+            <span class="text-stone-300"><i class="fa-solid fa-circle-exclamation text-amber-500 mr-1.5"></i><b>日柱旬空（空亡）：</b><span id="dayXunKong" class="text-amber-300 font-bold ml-1"></span></span>
+            <span class="text-stone-400">（註：四柱見此二地支即為逢空亡）</span>
+          </div>
+
+          <!-- 大運排列 -->
+          <div class="border-t border-stone-800 pt-4 space-y-2">
+            <h4 class="font-serif font-bold text-amber-200 text-sm flex items-center gap-1.5">
+              <i class="fa-solid fa-road text-amber-500"></i> 大運順逆與交運干支 (每十年一運)
+            </h4>
+            <div id="dayunContainer" class="grid grid-cols-4 md:grid-cols-8 gap-2 text-center text-xs">
+              <!-- JS rendered -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. 十神性情與六親代表 -->
+    <section id="sec-shishen" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm">
+        <h2 class="font-bold font-serif text-stone-900 text-lg">十神性情心性與六親應象</h2>
+        <p class="text-xs text-stone-600">八字十神代表心理性格特質、人際社會關係與六親吉凶推斷。</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="shishenGrid">
+        <!-- JS rendered -->
+      </div>
+    </section>
+
+    <!-- 2. 天干五行與健康疾病 -->
+    <section id="sec-tiangan" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm">
+        <h2 class="font-bold font-serif text-stone-900 text-lg">十天干五行身體部位與極端病理對照表</h2>
+        <p class="text-xs text-stone-600">天干代表體表與臟腑器官，當局中五行過旺、過衰或遭嚴重衝剋時之病理預警。</p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-stone-200">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-stone-800 text-amber-200 font-serif text-xs">
+                <th class="p-3 border-b border-stone-700">天干</th>
+                <th class="p-3 border-b border-stone-700">五行</th>
+                <th class="p-3 border-b border-stone-700">體表/肢體部位</th>
+                <th class="p-3 border-b border-stone-700">體內臟腑器官</th>
+                <th class="p-3 border-b border-stone-700">極端失衡病理與積聚異變預警</th>
+              </tr>
+            </thead>
+            <tbody id="tianganBodyTable" class="divide-y divide-stone-200">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 五行萬物類象與職業 -->
+    <section id="sec-wuxing" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm">
+        <h2 class="font-bold font-serif text-stone-900 text-lg">五行萬物類象與適任職業選擇</h2>
+        <p class="text-xs text-stone-600">根據八字喜用神五行屬性，對應最適切之事業行業方向與心性領域。</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="wuxingCards">
+        <!-- JS rendered -->
+      </div>
+    </section>
+
+    <!-- 4. 滴天髓·十二月用神提要 -->
+    <section id="sec-yongshen" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <h2 class="font-bold font-serif text-stone-900 text-lg">《滴天髓》· 窮通寶鑑十二月令特定用神速查</h2>
+          <p class="text-xs text-stone-600">依據日主天干與出生月令（節氣），調候與通關之核心用神指引。</p>
+        </div>
+        <div>
+          <select id="yongshenStemSelect" onchange="renderYongshenTable()" class="bg-stone-800 text-amber-200 text-sm font-bold rounded-lg px-3 py-1.5 border border-stone-700 focus:outline-none">
+            <option value="甲">甲木日主</option>
+            <option value="乙">乙木日主</option>
+            <option value="丙">丙火日主</option>
+            <option value="丁">丁火日主</option>
+            <option value="戊">戊土日主</option>
+            <option value="己">己土日主</option>
+            <option value="庚">庚金日主</option>
+            <option value="辛">辛金日主</option>
+            <option value="壬">壬水日主</option>
+            <option value="癸">癸水日主</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md p-5 border border-stone-200">
+        <h3 id="yongshenTitle" class="font-serif font-bold text-lg text-amber-900 border-b pb-2 mb-4"></h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="yongshenGrid">
+          <!-- JS rendered -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 十二長生對照 -->
+    <section id="sec-changsheng" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm">
+        <h2 class="font-bold font-serif text-stone-900 text-lg">十天干十二長生生旺死絕狀態表</h2>
+        <p class="text-xs text-stone-600">陽順陰逆，推算天干地支五行能量旺衰消長狀態之經典矩陣。</p>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-stone-200">
+        <div class="overflow-x-auto">
+          <table class="w-full text-center border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-800 text-amber-200 font-serif">
+                <th class="p-2 border">天干 \ 地支</th>
+                <th class="p-2 border">子</th>
+                <th class="p-2 border">丑</th>
+                <th class="p-2 border">寅</th>
+                <th class="p-2 border">卯</th>
+                <th class="p-2 border">辰</th>
+                <th class="p-2 border">巳</th>
+                <th class="p-2 border">午</th>
+                <th class="p-2 border">未</th>
+                <th class="p-2 border">申</th>
+                <th class="p-2 border">酉</th>
+                <th class="p-2 border">戌</th>
+                <th class="p-2 border">亥</th>
+              </tr>
+            </thead>
+            <tbody id="changshengTableBody" class="divide-y divide-stone-200 font-medium">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 神煞對照表 -->
+    <section id="sec-shensha" class="space-y-6 hidden">
+      <div class="bg-amber-100/60 border-l-4 border-amber-700 p-4 rounded-r-lg shadow-sm">
+        <h2 class="font-bold font-serif text-stone-900 text-lg">常用神煞天干／地支對照表與論斷指南</h2>
+        <p class="text-xs text-stone-600">神煞為論命輔助指標，以日干或年支/日支為基準，查對四柱地支與天干。吉神增福添威，凶煞提防禍患。</p>
+      </div>
+
+      <!-- 表格 1: 以日干/年干查地支神煞 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-stone-200">
+        <div class="bg-stone-800 px-4 py-2 text-amber-200 font-serif font-bold text-sm">
+          以天干（日干／年干）對照地支神煞表
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-center border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-100 text-stone-800 border-b font-bold">
+                <th class="p-2.5 border">天干基準</th>
+                <th class="p-2.5 border text-amber-900">天乙貴人</th>
+                <th class="p-2.5 border text-emerald-800">文昌貴人</th>
+                <th class="p-2.5 border text-rose-800">羊刃 (帝旺前/後)</th>
+                <th class="p-2.5 border text-blue-800">祿神 (臨官)</th>
+                <th class="p-2.5 border text-purple-800">紅艷煞</th>
+              </tr>
+            </thead>
+            <tbody id="shenshaStemTableBody" class="divide-y divide-stone-200">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 表格 2: 以年支/日支查地支神煞 -->
+      <div class="bg-white rounded-xl shadow-md overflow-hidden border border-stone-200">
+        <div class="bg-stone-800 px-4 py-2 text-amber-200 font-serif font-bold text-sm">
+          以地支（年支／日支）對照地支神煞表
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-center border-collapse text-xs">
+            <thead>
+              <tr class="bg-stone-100 text-stone-800 border-b font-bold">
+                <th class="p-2.5 border">地支三合/三會局</th>
+                <th class="p-2.5 border">包含地支</th>
+                <th class="p-2.5 border text-rose-800">桃花 (鹹池)</th>
+                <th class="p-2.5 border text-blue-800">驛馬</th>
+                <th class="p-2.5 border text-purple-800">華蓋</th>
+                <th class="p-2.5 border text-amber-900">將星</th>
+                <th class="p-2.5 border text-stone-600">劫煞</th>
+              </tr>
+            </thead>
+            <tbody id="shenshaBranchTableBody" class="divide-y divide-stone-200">
+              <!-- JS rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 神煞詳細寓意卡片 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="shenshaCards">
+        <!-- JS rendered -->
+      </div>
+    </section>
+
+    <!-- 7. 快速論命對照助手 (Interactive Tool) -->
+    <section id="sec-helper" class="space-y-6 hidden">
+      <div class="bg-amber-900 text-amber-100 p-5 rounded-2xl shadow-md">
+        <h2 class="font-bold font-serif text-xl text-amber-200 mb-1"><i class="fa-solid fa-compass mr-2"></i>實用論命速查對照助手</h2>
+        <p class="text-xs text-stone-300">輸入四柱日干與出生月令，即時為你檢索十二長生狀態、《滴天髓》專屬月令用神與健康失衡預警！</p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-md p-6 border border-stone-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-2">1. 選擇日干 (日主)</label>
+            <select id="helperDayStem" onchange="calculateHelper()" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 font-bold text-lg text-amber-900">
+              <option value="甲">甲木 (陽木)</option>
+              <option value="乙">乙木 (陰木)</option>
+              <option value="丙">丙火 (陽火)</option>
+              <option value="丁">丁火 (陰火)</option>
+              <option value="戊">戊土 (陽土)</option>
+              <option value="己">己土 (陰土)</option>
+              <option value="庚">庚金 (陽金)</option>
+              <option value="辛">辛金 (陰金)</option>
+              <option value="壬">壬水 (陽水)</option>
+              <option value="癸">癸水 (陰水)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-sm font-bold text-stone-700 mb-2">2. 出生月令 (月支)</label>
+            <select id="helperMonthBranch" onchange="calculateHelper()" class="w-full bg-stone-50 border border-stone-300 rounded-xl p-3 font-bold text-lg text-stone-800">
+              <option value="寅">寅月 (農曆正月 - 孟春)</option>
+              <option value="卯">卯月 (農曆二月 - 仲春)</option>
+              <option value="辰">辰月 (農曆三月 - 季春)</option>
+              <option value="巳">巳月 (農曆四月 - 孟夏)</option>
+              <option value="午">午月 (農曆五月 - 仲夏)</option>
+              <option value="未">未月 (農曆六月 - 季夏)</option>
+              <option value="申">申月 (農曆七月 - 孟秋)</option>
+              <option value="酉">酉月 (農曆八月 - 仲秋)</option>
+              <option value="戌">戌月 (農曆九月 - 季秋)</option>
+              <option value="亥">亥月 (農曆十月 - 孟冬)</option>
+              <option value="子">子月 (農曆十一月 - 仲冬)</option>
+              <option value="丑">丑月 (農曆十二月 - 季冬)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="bg-amber-50/60 rounded-xl p-5 border border-amber-200 space-y-4">
+          <h3 class="font-serif font-bold text-amber-900 text-base border-b border-amber-200 pb-2 flex items-center gap-2">
+            <i class="fa-solid fa-calculator text-amber-700"></i> 論命要點參照結果
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
+              <span class="text-xs text-stone-500 font-bold block mb-1">日干月令狀態 (十二長生)</span>
+              <div id="resChangsheng" class="text-xl font-bold text-amber-800"></div>
+              <p id="resChangshengDesc" class="text-xs text-stone-600 mt-1"></p>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
+              <span class="text-xs text-stone-500 font-bold block mb-1">《滴天髓》該月提要與特定用神</span>
+              <div id="resYongshen" class="text-base font-bold text-emerald-800"></div>
+              <p id="resYongshenDetail" class="text-xs text-stone-600 mt-1"></p>
+            </div>
+
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
+              <span class="text-xs text-stone-500 font-bold block mb-1">日干專屬貴人 / 神煞地支</span>
+              <div id="resShensha" class="text-xs text-stone-700 space-y-1 mt-1"></div>
+            </div>
+          </div>
+
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200">
+            <span class="text-xs font-bold text-rose-900 block mb-2"><i class="fa-solid fa-notes-medical mr-1"></i>日主【<span id="resStemName"></span>】健康與極端失衡病理預警</span>
+            <p id="resHealthDetail" class="text-xs text-stone-700 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-stone-900 text-stone-400 py-6 text-center text-xs border-t border-stone-800">
+    <p class="mb-1">八字命理速查秘笈 · 理論與實務論命工具</p>
+    <p class="text-stone-500">提示：命理論斷需全盤考量四柱干支、大運流年與刑衝會合，此表供專業速查參考。</p>
+  </footer>
+
+  <script>
+    // --- DATA STRUCTURES ---
+
+    const STEMS = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+    const BRANCHES = ["子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"];
+
+    // 地支藏干
+    const CANGGAN_MAP = {
+      "子": ["癸"],
+      "丑": ["己", "癸", "辛"],
+      "寅": ["甲", "丙", "戊"],
+      "卯": ["乙"],
+      "辰": ["戊", "乙", "癸"],
+      "巳": ["丙", "戊", "庚"],
+      "午": ["丁", "己"],
+      "未": ["己", "丁", "乙"],
+      "申": ["庚", "壬", "戊"],
+      "酉": ["辛"],
+      "戌": ["戊", "辛", "丁"],
+      "亥": ["壬", "甲"]
+    };
+
+    const CHANGSHENG_TABLE = {
+      "甲": ["沐浴", "冠帶", "臨官", "帝旺", "衰", "病", "死", "墓", "絕", "胎", "養", "長生"],
+      "乙": ["病", "衰", "帝旺", "臨官", "冠帶", "沐浴", "長生", "養", "胎", "絕", "死", "墓"],
+      "丙": ["胎", "養", "長生", "沐浴", "冠帶", "臨官", "帝旺", "衰", "病", "死", "墓", "絕"],
+      "丁": ["絕", "墓", "死", "病", "衰", "帝旺", "臨官", "冠帶", "沐浴", "長生", "養", "胎"],
+      "戊": ["胎", "養", "長生", "沐浴", "冠帶", "臨官", "帝旺", "衰", "病", "死", "墓", "絕"],
+      "己": ["絕", "墓", "死", "病", "衰", "帝旺", "臨官", "冠帶", "沐浴", "長生", "養", "胎"],
+      "庚": ["死", "墓", "絕", "胎", "養", "長生", "沐浴", "冠帶", "臨官", "帝旺", "衰", "病"],
+      "辛": ["長生", "養", "胎", "絕", "死", "墓", "病", "衰", "帝旺", "臨官", "冠帶", "沐浴"],
+      "壬": ["帝旺", "衰", "病", "死", "墓", "絕", "胎", "養", "長生", "沐浴", "冠帶", "臨官"],
+      "癸": ["臨官", "冠帶", "沐浴", "長生", "養", "胎", "絕", "死", "墓", "病", "衰", "帝旺"]
+    };
+
+    // 十神推算邏輯
+    function getShishen(dayStem, targetStem) {
+      if (!dayStem || !targetStem) return "";
+      const stemElements = { "甲":"木", "乙":"木", "丙":"火", "丁":"火", "戊":"土", "己":"土", "庚":"金", "辛":"金", "壬":"水", "癸":"水" };
+      const stemYinYang = { "甲":1, "乙":0, "丙":1, "丁":0, "戊":1, "己":0, "庚":1, "辛":0, "壬":1, "癸":0 };
+      
+      const dayEl = stemElements[dayStem];
+      const targetEl = stemElements[targetStem];
+      const isSameYinYang = stemYinYang[dayStem] === stemYinYang[targetStem];
+
+      if (dayEl === targetEl) return isSameYinYang ? "比肩" : "劫財";
+      
+      const produces = { "木":"火", "火":"土", "土":"金", "金":"水", "水":"木" };
+      if (produces[dayEl] === targetEl) return isSameYinYang ? "食神" : "傷官";
+      
+      const controls = { "木":"土", "土":"水", "水":"火", "火":"金", "金":"木" };
+      if (controls[dayEl] === targetEl) return isSameYinYang ? "偏財" : "正財";
+      if (controls[targetEl] === dayEl) return isSameYinYang ? "七殺" : "正官";
+      if (produces[targetEl] === dayEl) return isSameYinYang ? "偏印" : "正印";
+      
+      return "";
+    }
+
+    // 計算六十甲子旬空
+    function getXunKong(stem, branch) {
+      const sIdx = STEMS.indexOf(stem);
+      const bIdx = BRANCHES.indexOf(branch);
+      // 算出該旬第1位地支
+      const startBIdx = (bIdx - sIdx + 12) % 12;
+      // 旬空為該旬最後兩位地支
+      const kong1 = BRANCHES[(startBIdx + 10) % 12];
+      const kong2 = BRANCHES[(startBIdx + 11) % 12];
+      return `${kong1}${kong2}`;
+    }
+
+    // 計算特定地支的神煞
+    function getColumnShensha(dayStem, yearBranch, dayBranch, targetBranch) {
+      let result = [];
+
+      // 1. 天乙貴人 (以日干/年干，此處採日干為主)
+      const tianyiMap = {
+        "甲": ["丑", "未"], "戊": ["丑", "未"], "庚": ["丑", "未"],
+        "乙": ["子", "申"], "己": ["子", "申"],
+        "丙": ["亥", "酉"], "丁": ["亥", "酉"],
+        "辛": ["午", "寅"],
+        "壬": ["卯", "巳"], "癸": ["卯", "巳"]
+      };
+      if (tianyiMap[dayStem] && tianyiMap[dayStem].includes(targetBranch)) result.push("天乙");
+
+      // 2. 文昌貴人 (日干)
+      const wenchangMap = { "甲":"巳", "乙":"午", "丙":"申", "丁":"酉", "戊":"申", "己":"酉", "庚":"亥", "辛":"子", "壬":"寅", "癸":"卯" };
+      if (wenchangMap[dayStem] === targetBranch) result.push("文昌");
+
+      // 3. 祿神 (日干)
+      const luMap = { "甲":"寅", "乙":"卯", "丙":"巳", "丁":"午", "戊":"巳", "己":"午", "庚":"申", "辛":"酉", "壬":"亥", "癸":"子" };
+      if (luMap[dayStem] === targetBranch) result.push("祿神");
+
+      // 4. 羊刃 (日干)
+      const yangrenMap = { "甲":"卯", "乙":"辰", "丙":"午", "丁":"未", "戊":"午", "己":"未", "庚":"酉", "辛":"戌", "壬":"子", "癸":"丑" };
+      if (yangrenMap[dayStem] === targetBranch) result.push("羊刃");
+
+      // 5. 桃花 (以年支或日支查地支)
+      const taohuaGroup = { "申":"酉", "子":"酉", "辰":"酉", "亥":"子", "卯":"子", "未":"子", "寅":"卯", "午":"卯", "戌":"卯", "巳":"午", "酉":"午", "丑":"午" };
+      if (taohuaGroup[dayBranch] === targetBranch || taohuaGroup[yearBranch] === targetBranch) {
+        if (!result.includes("桃花")) result.push("桃花");
+      }
+
+      // 6. 驛馬 (以年支或日支查地支)
+      const yimaGroup = { "申":"寅", "子":"寅", "辰":"寅", "亥":"巳", "卯":"巳", "未":"巳", "寅":"申", "午":"申", "戌":"申", "巳":"亥", "酉":"亥", "丑":"亥" };
+      if (yimaGroup[dayBranch] === targetBranch || yimaGroup[yearBranch] === targetBranch) {
+        if (!result.includes("驛馬")) result.push("驛馬");
+      }
+
+      // 7. 華蓋 (以年支或日支)
+      const huagaiGroup = { "申":"辰", "子":"辰", "辰":"辰", "亥":"未", "卯":"未", "未":"未", "寅":"戌", "午":"戌", "戌":"戌", "巳":"丑", "酉":"丑", "丑":"丑" };
+      if (huagaiGroup[dayBranch] === targetBranch || huagaiGroup[yearBranch] === targetBranch) {
+        if (!result.includes("華蓋")) result.push("華蓋");
+      }
+
+      // 8. 將星
+      const jiangxingGroup = { "申":"子", "子":"子", "辰":"子", "亥":"卯", "卯":"卯", "未":"卯", "寅":"午", "午":"午", "戌":"午", "巳":"酉", "酉":"酉", "丑":"酉" };
+      if (jiangxingGroup[dayBranch] === targetBranch || jiangxingGroup[yearBranch] === targetBranch) {
+        if (!result.includes("將星")) result.push("將星");
+      }
+
+      return result.length > 0 ? result.join("<br>") : "-";
+    }
+
+    // 計算特定公曆日期的干支 (年柱、月柱、日柱)
+    function calculateSolarToBazi(d) {
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+
+      // 年柱 (以立春概算/年數為基準)
+      const yearStemIdx = (year - 4) % 10;
+      const yearBranchIdx = (year - 4) % 12;
+      const yearStem = STEMS[yearStemIdx < 0 ? yearStemIdx + 10 : yearStemIdx];
+      const yearBranch = BRANCHES[yearBranchIdx < 0 ? yearBranchIdx + 12 : yearBranchIdx];
+
+      // 月柱
+      const monthBranchIdx = (month + 1) % 12;
+      const monthBranch = BRANCHES[monthBranchIdx];
+      const monthStemStartMap = { "甲": 2, "己": 2, "乙": 4, "庚": 4, "丙": 6, "辛": 6, "丁": 8, "壬": 8, "戊": 0, "癸": 0 };
+      const monthStemStart = monthStemStartMap[yearStem] || 0;
+      const monthStem = STEMS[(monthStemStart + (month - 1)) % 10];
+
+      // 日柱
+      const baseDate = new Date(1900, 0, 31);
+      const diffDays = Math.floor((d - baseDate) / (1000 * 60 * 60 * 24));
+      const dayStemIdx = (diffDays) % 10;
+      const dayBranchIdx = (diffDays + 6) % 12;
+      const dayStem = STEMS[dayStemIdx < 0 ? dayStemIdx + 10 : dayStemIdx];
+      const dayBranch = BRANCHES[dayBranchIdx < 0 ? dayBranchIdx + 12 : dayBranchIdx];
+
+      return {
+        yearStem, yearBranch,
+        monthStem, monthBranch,
+        dayStem, dayBranch
+      };
+    }
+
+    // 八字完整排盤主函數
+    function generateBaziChart() {
+      const name = document.getElementById('paipanName').value || '命主';
+      const gender = document.getElementById('paipanGender').value;
+      const dateStr = document.getElementById('paipanDate').value;
+      const hourVal = parseInt(document.getElementById('paipanHour').value);
+      const targetDateStr = document.getElementById('targetDate').value;
+
+      if(!dateStr) {
+        alert('請選擇出生公曆日期！');
+        return;
+      }
+
+      const d = new Date(dateStr);
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const day = d.getDate();
+
+      // 八字干支推算
+      const bazi = calculateSolarToBazi(d);
+      const yearStem = bazi.yearStem;
+      const yearBranch = bazi.yearBranch;
+      const monthStem = bazi.monthStem;
+      const monthBranch = bazi.monthBranch;
+      const dayStem = bazi.dayStem;
+      const dayBranch = bazi.dayBranch;
+
+      // 時柱推算
+      const hourBranchIdx = Math.floor((hourVal + 1) / 2) % 12;
+      const hourBranch = BRANCHES[hourBranchIdx];
+      const hourStemStartMap = { "甲": 0, "己": 0, "乙": 2, "庚": 2, "丙": 4, "辛": 4, "丁": 6, "壬": 6, "戊": 8, "癸": 8 };
+      const hourStemStart = hourStemStartMap[dayStem] || 0;
+      const hourStem = STEMS[(hourStemStart + hourBranchIdx) % 10];
+
+      // 渲染命主基本資訊
+      document.getElementById('chartName').innerText = name;
+      document.getElementById('chartGender').innerText = gender;
+      document.getElementById('chartSolarDate').innerText = `公曆出生：${year}年${month}月${day}日 ${hourVal}:00`;
+
+      // 干支
+      document.getElementById('stem-year').innerText = yearStem;
+      document.getElementById('branch-year').innerText = yearBranch;
+      document.getElementById('stem-month').innerText = monthStem;
+      document.getElementById('branch-month').innerText = monthBranch;
+      document.getElementById('stem-day').innerText = dayStem;
+      document.getElementById('branch-day').innerText = dayBranch;
+      document.getElementById('stem-hour').innerText = hourStem;
+      document.getElementById('branch-hour').innerText = hourBranch;
+
+      // 天干十神
+      document.getElementById('ss-year').innerText = getShishen(dayStem, yearStem);
+      document.getElementById('ss-month').innerText = getShishen(dayStem, monthStem);
+      document.getElementById('ss-hour').innerText = getShishen(dayStem, hourStem);
+
+      // 地支藏干與藏干十神
+      const renderCangGan = (branch) => CANGGAN_MAP[branch].join(' ');
+      const renderCangGanSS = (branch) => CANGGAN_MAP[branch].map(st => getShishen(dayStem, st)).join(' ');
+
+      document.getElementById('cg-year').innerText = renderCangGan(yearBranch);
+      document.getElementById('cg-month').innerText = renderCangGan(monthBranch);
+      document.getElementById('cg-day').innerText = renderCangGan(dayBranch);
+      document.getElementById('cg-hour').innerText = renderCangGan(hourBranch);
+
+      document.getElementById('cgss-year').innerText = renderCangGanSS(yearBranch);
+      document.getElementById('cgss-month').innerText = renderCangGanSS(monthBranch);
+      document.getElementById('cgss-day').innerText = renderCangGanSS(dayBranch);
+      document.getElementById('cgss-hour').innerText = renderCangGanSS(hourBranch);
+
+      // 十二長生
+      document.getElementById('cs-year').innerText = CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(yearBranch)];
+      document.getElementById('cs-month').innerText = CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(monthBranch)];
+      document.getElementById('cs-day').innerText = CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(dayBranch)];
+      document.getElementById('cs-hour').innerText = CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(hourBranch)];
+
+      // 旬空 (空亡) 計算
+      const dayKong = getXunKong(dayStem, dayBranch);
+      document.getElementById('dayXunKong').innerText = dayKong;
+
+      const checkKong = (branch) => dayKong.includes(branch) ? "【空亡】" : "無";
+      document.getElementById('kong-year').innerText = checkKong(yearBranch);
+      document.getElementById('kong-month').innerText = checkKong(monthBranch);
+      document.getElementById('kong-hour').innerText = checkKong(hourBranch);
+
+      // 四柱神煞
+      document.getElementById('sha-year').innerHTML = getColumnShensha(dayStem, yearBranch, dayBranch, yearBranch);
+      document.getElementById('sha-month').innerHTML = getColumnShensha(dayStem, yearBranch, dayBranch, monthBranch);
+      document.getElementById('sha-day').innerHTML = getColumnShensha(dayStem, yearBranch, dayBranch, dayBranch);
+      document.getElementById('sha-hour').innerHTML = getColumnShensha(dayStem, yearBranch, dayBranch, hourBranch);
+
+      // 大運計算
+      const dayunBox = document.getElementById('dayunContainer');
+      let dayunHTML = '';
+      let mStemIdx = STEMS.indexOf(monthStem);
+      let mBranchIdx = BRANCHES.indexOf(monthBranch);
+      
+      const isYangStem = ["甲","丙","戊","庚","壬"].includes(yearStem);
+      const isMale = gender.includes("乾");
+      const isForward = (isYangStem && isMale) || (!isYangStem && !isMale);
+
+      for(let i = 1; i <= 8; i++) {
+        if(isForward) {
+          mStemIdx = (mStemIdx + 1) % 10;
+          mBranchIdx = (mBranchIdx + 1) % 12;
+        } else {
+          mStemIdx = (mStemIdx - 1 + 10) % 10;
+          mBranchIdx = (mBranchIdx - 1 + 12) % 12;
+        }
+        const dyStem = STEMS[mStemIdx];
+        const dyBranch = BRANCHES[mBranchIdx];
+        const dyAge = i * 10;
+        dayunHTML += `
+          <div class="bg-stone-800 p-2 rounded border border-stone-700">
+            <span class="text-amber-400 block font-serif text-lg font-bold">${dyStem}${dyBranch}</span>
+            <span class="text-stone-400 text-[10px] block">${dyAge}歲起運</span>
+            <span class="text-emerald-400 text-[10px] block">${getShishen(dayStem, dyStem)} / ${CHANGSHENG_TABLE[dayStem][mBranchIdx]}</span>
+          </div>
+        `;
+      }
+      dayunBox.innerHTML = dayunHTML;
+
+      // 對照當前流年、流月、流日推算
+      const tDate = targetDateStr ? new Date(targetDateStr) : new Date();
+      const targetBazi = calculateSolarToBazi(tDate);
+
+      document.getElementById('targetSolarStr').innerText = `公曆：${tDate.getFullYear()}年${tDate.getMonth()+1}月${tDate.getDate()}日`;
+      
+      // 流年
+      const lnGanzhi = `${targetBazi.yearStem}${targetBazi.yearBranch}`;
+      document.getElementById('liunianGanZhi').innerText = lnGanzhi;
+      document.getElementById('liunianShishen').innerText = `十神：${getShishen(dayStem, targetBazi.yearStem)} (${CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(targetBazi.yearBranch)]})`;
+
+      // 流月
+      const lyGanzhi = `${targetBazi.monthStem}${targetBazi.monthBranch}`;
+      document.getElementById('liuyueGanZhi').innerText = lyGanzhi;
+      document.getElementById('liuyueShishen').innerText = `十神：${getShishen(dayStem, targetBazi.monthStem)} (${CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(targetBazi.monthBranch)]})`;
+
+      // 流日
+      const lrGanzhi = `${targetBazi.dayStem}${targetBazi.dayBranch}`;
+      document.getElementById('liuriGanZhi').innerText = lrGanzhi;
+      document.getElementById('liuriShishen').innerText = `十神：${getShishen(dayStem, targetBazi.dayStem)} (${CHANGSHENG_TABLE[dayStem][BRANCHES.indexOf(targetBazi.dayBranch)]})`;
+
+      document.getElementById('paipanResult').classList.remove('hidden');
+    }
+
+    const SHISHEN_DATA = [
+      {
+        name: "正官",
+        type: "官殺類 (剋我者)",
+        charPositive: "光明正大、嚴以律己、重信譽、有責任感、遵紀守法、具領導組織力。",
+        charNegative: "墨守成規、優柔寡斷、缺乏魄力、過度保守、易感壓力孤獨。",
+        kinPositive: "女命代表賢夫、好丈夫；男命代表孝順之女兒、正當上司與長官。",
+        kinNegative: "官殺過旺無印化或食制時，女命易遇家暴或刻薄丈夫，男命與子女緣薄或受官司困擾。",
+        icon: "fa-crown",
+        color: "amber"
+      },
+      {
+        name: "七殺 (偏官)",
+        type: "官殺類 (剋我者)",
+        charPositive: "果斷勇敢、有魄力、豪爽不屈、具開創力、極富鬥志與威嚴。",
+        charNegative: "專制霸道、急躁衝動、疑心病重、易走極端、好勝爭鬥。",
+        kinPositive: "男命代表有氣魄之兒子；女命代表事業型伴侶或情人。",
+        kinNegative: "七殺無制（無食神制或印星化），代表小人騷擾、陷害、意外傷害、橫禍。",
+        icon: "fa-shield-halved",
+        color: "red"
+      },
+      {
+        name: "正印",
+        type: "印綬類 (生我者)",
+        charPositive: "慈祥仁厚、寬宏大量、重視精神學習、具涵養、好學深思、樂善好施。",
+        charNegative: "依賴心強、缺乏行動力、過度理想化、遲鈍拖延、注重面子。",
+        kinPositive: "代表母親、貴人、師長、提拔自己的長輩、庇護者。",
+        kinNegative: "印多滅火/淹木（印重身困），代表母過度溺愛致使自立能力差、學業受阻。",
+        icon: "fa-book-open",
+        color: "emerald"
+      },
+      {
+        name: "偏印 (梟神)",
+        type: "印綬類 (生我者)",
+        charPositive: "精明敏銳、直覺力強、具獨創性、精通冷門學問、觀察力入木三分。",
+        charNegative: "孤僻冷漠、疑心重、多學少成、偏激性格、三分鐘熱度。",
+        kinPositive: "代表繼母、乾媽、義父、非傳統導師、偏門貴人。",
+        kinNegative: "逢梟神奪食時，主破財、疾病、婦科問題、失業或意外產難。",
+        icon: "fa-hat-wizard",
+        color: "teal"
+      },
+      {
+        name: "比肩",
+        type: "比劫類 (同我者)",
+        charPositive: "意志堅定、自尊心強、獨立自主、重朋友義氣、踏實穩重。",
+        charNegative: "固執己見、獨斷獨行、不易妥協、合夥易生裂痕。",
+        kinPositive: "代表同性之兄弟姊妹、平輩好友、事業合作夥伴。",
+        kinNegative: "比肩過旺代表分財、剋妻、父親健康受損、財來財去。",
+        icon: "fa-handshake",
+        color: "blue"
+      },
+      {
+        name: "劫財",
+        type: "比劫類 (同我者)",
+        charPositive: "熱情豪爽、適應力強、心思敏捷、善於交際、具爆發力。",
+        charNegative: "投機心重、雙重性格、衝動破財、好賭好勝、對親近者缺乏耐性。",
+        kinPositive: "代表異性之兄弟姊妹、同事、競爭對手中的盟友。",
+        kinNegative: "劫財奪財，主嚴重破財、婚姻受破壞、父親或妻子身體不佳。",
+        icon: "fa-bolt",
+        color: "indigo"
+      },
+      {
+        name: "食神",
+        type: "食傷類 (我生者)",
+        charPositive: "溫和隨和、通情達理、富藝術氣質、懂生活享受、口福佳、長壽之星。",
+        charNegative: "迂腐軟弱、貪圖享樂、缺乏危機意識、理想過高而不切實際。",
+        kinPositive: "女命代表優秀之女兒、晚輩；男命代表岳母、下屬。",
+        kinNegative: "食神過多轉為傷官，易好高鶩遠、怠惰懶散。",
+        icon: "fa-utensils",
+        color: "purple"
+      },
+      {
+        name: "傷官",
+        type: "食傷類 (我生者)",
+        charPositive: "聰明絕頂、反應敏捷、具表現欲、才華橫溢、敢打破傳統、富創造力。",
+        charNegative: "傲慢無禮、任性妄為、口舌非多、不服管束、易得罪人。",
+        kinPositive: "女命代表聰明之兒子；男命代表祖母、妻家晚輩。",
+        kinNegative: "傷官見官（無印解），主官非口舌、損害名譽、女命剋夫或婚姻不順。",
+        icon: "fa-wand-magic",
+        color: "pink"
+      },
+      {
+        name: "正財",
+        type: "財星類 (我剋者)",
+        charPositive: "勤勞節儉、踏實穩重、珍惜資源、重視信用、講求實際效率。",
+        charNegative: "斤斤計較、過度吝嗇、缺乏遠見、過度物質主義、缺乏情調。",
+        kinPositive: "男命代表賢妻、正妻；男女命皆代表父親、勤勞之血汗財。",
+        kinNegative: "財多身弱，富屋貧人；男命易受妻子控制或因財色招禍。",
+        icon: "fa-coins",
+        color: "yellow"
+      },
+      {
+        name: "偏財",
+        type: "財星類 (我剋者)",
+        charPositive: "慷慨大方、交際手腕高、樂天達觀、有商業頭腦、機敏靈巧。",
+        charNegative: "浮華浪費、感情不專一、投機風險大、虛榮心強。",
+        kinPositive: "代表父親、男命之情人/妾室、商業事業夥伴。",
+        kinNegative: "偏財過旺而身弱，易因賭博、投資失敗或女人問題引發債務崩潰。",
+        icon: "fa-gem",
+        color: "amber"
+      }
+    ];
+
+    const TIANGAN_BODY = [
+      { 
+        stem: "甲", element: "陽木", outer: "頭部、頭髮、肢體、膽", inner: "膽囊、腦神經、肝臟經絡", 
+        disease: "【火炎土燥】甲木被焚，易罹患肝膽病變、腦部積聚或神經官能症；【金堅木缺】易致骨折、頭部外傷或中風。" 
+      },
+      { 
+        stem: "乙", element: "陰木", outer: "頸部、肩膊、手足、毛髮", inner: "肝臟、頸椎、氣管、淋巴系統", 
+        disease: "【火炎土燥】乙木焦枯，極易引發乳腺結塊、甲狀腺或淋巴腫塊；【水多木漂】易患肝硬化、腹水及慢性肝炎。" 
+      },
+      { 
+        stem: "丙", element: "陽火", outer: "額頭、眼睛、臉頰、小腸", inner: "心臟、血液循環、視網膜", 
+        disease: "【火旺無水】心血過熱、高血壓、心肌梗塞；【水多滅火】易患眼疾失明、小腸病變、心力衰竭及中風。" 
+      },
+      { 
+        stem: "丁", element: "陰火", outer: "舌頭、乳房、心包膜", inner: "心臟瓣膜、微血管、神經系統", 
+        disease: "【火炎土燥】易患乳房結塊、舌部病變、血管硬化；【水多濕木】易致嚴重心律不整、失眠多夢及低血壓。" 
+      },
+      { 
+        stem: "戊", element: "陽土", outer: "面部、鼻樑、肌肉、脅肋", inner: "胃部、消化道、肋膜", 
+        disease: "【火炎土燥】胃部焦乾，極易引發胃腸結塊、食道或胰臟異變、胃潰瘍；【木多剋土】易致胃出血、脾胃衰衰竭。" 
+      },
+      { 
+        stem: "己", element: "陰土", outer: "皮膚、腹部、脾臟、唇", inner: "脾臟、胰臟、腸道吸收功能", 
+        disease: "【火炎土燥】己土焦破，極易患結腸或直腸結塊、糖尿病、皮膚病變；【水濕木旺】易致脾濕下陷、腸道息肉。" 
+      },
+      { 
+        stem: "庚", element: "陽金", outer: "骨骼、牙齒、大腸、筋骨", inner: "肺部、氣管、大腸系統", 
+        disease: "【火炎土燥】庚金被熔，極易患肺部或大腸結塊、喉部異變；【水多金沉】易致慢性肺炎、骨骼病變或嚴重風濕。" 
+      },
+      { 
+        stem: "辛", element: "陰金", outer: "呼吸道、咽喉、支氣管、皮膚", inner: "肺泡、淋巴細胞、微血管", 
+        disease: "【火炎土燥】辛金珠玉被毀，易患支氣管病變、鼻咽異變、皮膚病變；【水寒金凍】易致淋巴結塊、過敏性哮喘。" 
+      },
+      { 
+        stem: "壬", element: "陽水", outer: "小腿、膀胱、耳道、血液", inner: "腎臟、膀胱、血液總循環", 
+        disease: "【火炎土燥】壬水乾涸，極易患腎臟或膀胱結塊、前列腺病變、尿毒症；【水旺無土】水腫、心腎不交。" 
+      },
+      { 
+        stem: "癸", element: "陰水", outer: "足部、生殖器官、汗腺", inner: "腎精、婦科子宮卵巢、內分泌", 
+        disease: "【火炎土燥】癸水熬乾，極高機率患婦科子宮或卵巢結塊、內分泌腫塊；【金寒水冷】子宮肌瘤、不孕症。" 
+      }
+    ];
+
+    const WUXING_DATA = [
+      {
+        element: "木 (仁)",
+        color: "emerald",
+        nature: "條達舒暢、仁慈向上、具側隱之心、理智溫和。",
+        field: "林業、園藝、木材加工、紙業、圖書出版、教育學術、文教機構、中藥材、紡織服飾、文化創作者。",
+        personality: "性格仁慈、富有同情心、正直隨和，適合從事需要耐心與育成性質之工作。"
+      },
+      {
+        element: "火 (禮)",
+        color: "red",
+        nature: "熱情奔放、光明磊落、注重禮儀、文採斐然。",
+        field: "餐飲熱食、電子光電、電力能源、美容美髮、演藝娛樂、攝影、新聞媒體、化學化工、高科技業。",
+        personality: "性情急躁但爽朗，重視禮節，自我表現力強，適合公關、傳播與創意產業。"
+      },
+      {
+        element: "土 (信)",
+        color: "amber",
+        nature: "厚德載物、包容誠信、踏實穩重、重諾守信。",
+        field: "房地產、建築土木、農業培植、礦業、水泥、古董買賣、倉儲物流、信託保險、托育養老機構。",
+        personality: "為人忠厚老實、講求信用、沉穩冷靜，適合管理、不動產或長遠規劃之行業。"
+      },
+      {
+        element: "金 (義)",
+        color: "yellow",
+        nature: "剛毅果決、講求情義、仗義執言、重視紀律。",
+        field: "金融銀行、證券投資、金屬機械、軍警司法、醫療外科、珠寶首飾、汽車工業、精密儀器。",
+        personality: "果斷勇敢、重視原則與紀律，具備領導決斷力，適合法律、金融與嚴謹技術崗位。"
+      },
+      {
+        element: "水 (智)",
+        color: "blue",
+        nature: "聰明機智、隨灣就灣、思考敏捷、靈活多變。",
+        field: "水產海運、旅遊航運、飲料酒吧、物流快遞、清潔洗滌、心理諮商、自由職業、外交公關。",
+        personality: "足智多謀、適應力極強、善於交際溝通，適合變化度高、流動性強之事業。"
+      }
+    ];
+
+    const YONGSHEN_MAP = {
+      "甲": [
+        { month: "寅月 (正月)", need: "丙火、癸水", desc: "《滴天髓》：初春尚有餘寒，專用丙火解凍照耀，次取癸水滋潤，不宜見庚金劈伐。" },
+        { month: "卯月 (二月)", need: "庚金、丁火", desc: "《滴天髓》：陽刃當權，木旺極，專用庚金砍伐成材，無庚用丁火洩秀。" },
+        { month: "辰月 (三月)", need: "庚金、丁火、壬水", desc: "木氣漸衰土旺，先用庚金，次用丁火，若土厚需用甲木疏土。" },
+        { month: "巳月 (四月)", need: "癸水、庚金", desc: "夏木退氣，火旺木焦，專用癸水調候解渴，次取庚金生水。" },
+        { month: "午月 (五月)", need: "癸水、壬水、庚金", desc: "木性虛焦，極度依賴壬癸水滋潤，無水木化為灰燼。" },
+        { month: "未月 (六月)", need: "癸水、庚金", desc: "上半月同午月專用癸水，下半月金水漸生，取庚金生水。" },
+        { month: "申月 (七月)", need: "庚金、丁火、丙火", desc: "秋木絕地，庚金當權，宜用丁火鍛金，丙火曬木。" },
+        { month: "酉月 (八月)", need: "丙火、丁火、癸水", desc: "木凋金銳，專取丙丁火制金護木，水多則木漂。" },
+        { month: "戌月 (九月)", need: "甲木、丙火、癸水", desc: "土旺木枯，先用甲木比肩疏土，次用丙火暖局、癸水潤土。" },
+        { month: "亥月 (十月)", need: "丙火、庚金", desc: "《滴天髓》：木生於亥，寒木向陽，全憑丙火解凍，庚金生水。" },
+        { month: "子月 (十一月)", need: "丙火、丁火", desc: "嚴冬寒凍，木氣凍結，專用丙火解凍，丁火引生，忌癸水凍木。" },
+        { month: "丑月 (十二月)", need: "丙火、丁火、甲木", desc: "濕泥凍木，非丙火溫照不能發育，次取丁火辟甲生暖。" }
+      ],
+      "乙": [
+        { month: "寅月 (正月)", need: "丙火、癸水", desc: "《滴天髓》：乙木藤蘿，寒氣未除，專取丙火暖局，癸水滋培。" },
+        { month: "卯月 (二月)", need: "癸水、丙火", desc: "乙木專祿，花卉吐艷，喜丙火照耀，癸水滋養，忌庚金剋伐。" },
+        { month: "辰月 (三月)", need: "癸水、丙火", desc: "陽氣漸盛，專用癸水潤根，丙火照景。" },
+        { month: "巳月 (四月)", need: "癸水", desc: "火旺木焦，專用癸水降溫灌溉，忌丙丁火疊見。" },
+        { month: "午月 (五月)", need: "癸水、壬水", desc: "上半月專用癸水，下半月兼取壬水，水弱則木枯亡。" },
+        { month: "未月 (六月)", need: "癸水、丙火", desc: "土燥木枯，專用癸水潤土生木，兼取丙火。" },
+        { month: "申月 (七月)", need: "己土、癸水、丙火", desc: "乙木申月庚金乘權，若從殺用庚，否則取癸水化殺生身。" },
+        { month: "酉月 (八月)", need: "癸水、丙火、丁火", desc: "乙木枯憔，專用癸水化殺，丙火制金解寒。" },
+        { month: "戌月 (九月)", need: "癸水、辛金", desc: "根枯葉落，用癸水滋潤，辛金發水。" },
+        { month: "亥月 (十月)", need: "丙火", desc: "《滴天髓》：乙木生亥，乙木懷胎，專用丙火暖局解凍。" },
+        { month: "子月 (十一月)", need: "丙火", desc: "寒凍之極，非丙火不能生發，水旺需戊土止水。" },
+        { month: "丑月 (十二月)", need: "丙火", desc: "寒谷回春，專用丙火解凍，切忌水多凍壞木根。" }
+      ],
+      "丙": [
+        { month: "寅月 (正月)", need: "壬水、庚金", desc: "《滴天髓》：丙火太陽，生於寅月，喜壬水映照成輝，庚金發水。" },
+        { month: "卯月 (二月)", need: "壬水、己土", desc: "正印當權，專用壬水，水多則用戊土止水。" },
+        { month: "辰月 (三月)", need: "壬水、甲木", desc: "洩氣漸重，專用壬水輔映，甲木疏土生身。" },
+        { month: "巳月 (四月)", need: "壬水、庚金、癸水", desc: "建祿當權，火勢極旺，專用壬水解炎，庚金生水。" },
+        { month: "午月 (五月)", need: "壬水、庚金", desc: "陽刃極旺，非壬水不能濟火，庚金為發水源。" },
+        { month: "未月 (六月)", need: "壬水、甲木", desc: "傷官當權，火炎土燥，先用壬水，次取甲木疏土。" },
+        { month: "申月 (七月)", need: "壬水、戊土", desc: "丙火退氣，申金生水，專用壬水，土多用甲。" },
+        { month: "酉月 (八月)", need: "壬水、癸水", desc: "丙火日落西山，喜壬水輔映，忌土晦光。" },
+        { month: "戌月 (九月)", need: "甲木、壬水", desc: "土旺晦光，先用甲木疏土生火，次取壬水成輝。" },
+        { month: "亥月 (十月)", need: "甲木、戊土、丙火", desc: "《滴天髓》：丙火太陽，冬日可念，急需甲木化殺生身，丙火幫扶。" },
+        { month: "子月 (十一月)", need: "壬水、甲木", desc: "冬日嚴寒，用壬水為輔，甲木引生丙火。" },
+        { month: "丑月 (十二月)", need: "甲木、壬水", desc: "二陽進氣，專用甲木生火疏土，壬水為輔。" }
+      ],
+      "丁": [
+        { month: "寅月 (正月)", need: "甲木、庚金", desc: "《滴天髓》：丁火爐冶之火，生於寅月，用甲木引丁，庚金劈甲。" },
+        { month: "卯月 (二月)", need: "庚金、甲木", desc: "乙木偏印當權，易濕木塞丁，專用庚金劈木引丁。" },
+        { month: "辰月 (三月)", need: "甲木、庚金", desc: "官星傷官當權，先用甲木疏土生火，庚金輔之。" },
+        { month: "巳月 (四月)", need: "甲木、庚金、癸水", desc: "丁火乘旺，仍不離甲木為體，癸水調候。" },
+        { month: "午月 (五月)", need: "壬水、庚金、甲木", desc: "建祿極旺，專用壬水調候，庚金生水，甲木引丁。" },
+        { month: "未月 (六月)", need: "甲木、壬水、庚金", desc: "火炎土燥，專用甲木疏土生火，壬水調候。" },
+        { month: "申月 (七月)", need: "甲木、庚金、丙火", desc: "丁火退氣，全憑甲木生身，庚金劈甲，丙火暖局。" },
+        { month: "酉月 (八月)", need: "甲木、庚金、丙火", desc: "財旺身衰，專取甲木生身，庚金劈甲。" },
+        { month: "戌月 (九月)", need: "甲木、庚金", desc: "戊土當權，用甲木疏土生火，庚金為輔。" },
+        { month: "亥月 (十月)", need: "甲木、庚金", desc: "《滴天髓》：丁火抱丙，勇於乘伍，冬日全憑甲木生丁，庚金劈甲。" },
+        { month: "子月 (十一月)", need: "甲木、庚金", desc: "癸水七殺當權，極需甲木化殺生身，庚金發水引丁。" },
+        { month: "丑月 (十二月)", need: "甲木、庚金", desc: "濕寒之極，專取甲木生火，庚金劈甲。" }
+      ],
+      "戊": [
+        { month: "寅月 (正月)", need: "丙火、甲木、癸水", desc: "《滴天髓》：戊土固重，春土氣虛，先取丙火暖土，次用甲木疏土。" },
+        { month: "卯月 (二月)", need: "丙火、甲木、癸水", desc: "官星當權，先用丙火化殺生土，次用甲木疏土。" },
+        { month: "辰月 (三月)", need: "甲木、丙火、癸水", desc: "戊土當權，先用甲木疏土，次取丙火、癸水。" },
+        { month: "巳月 (四月)", need: "癸水、甲木、丙火", desc: "建祿燥土，急需癸水潤土，甲木疏土。" },
+        { month: "午月 (五月)", need: "癸水、壬水、甲木", desc: "火炎土燥，非壬癸水滋潤不可，土焦則萬物不生。" },
+        { month: "未月 (六月)", need: "癸水、甲木", desc: "土焦木枯，專用癸水潤土，甲木疏土。" },
+        { month: "申月 (七月)", need: "丙火、癸水、甲木", desc: "金旺洩土，先用丙火生土溫局，癸水潤澤。" },
+        { month: "酉月 (八月)", need: "丙火、癸水", desc: "傷官當權，土被洩氣，專用丙火生土，癸水潤土。" },
+        { month: "戌月 (九月)", need: "甲木、丙火、癸水", desc: "戊土當權極厚，先用甲木疏土，次用丙火癸水。" },
+        { month: "亥月 (十月)", need: "丙火、甲木", desc: "《滴天髓》：冬土嚴寒，專用丙火解凍，甲木疏土。" },
+        { month: "子月 (十一月)", need: "丙火、甲木", desc: "冰凍之土，非丙火溫照不能發育萬物。" },
+        { month: "丑月 (十二月)", need: "丙火、甲木", desc: "嚴寒凍土，專用丙火解凍，甲木疏生。" }
+      ],
+      "己": [
+        { month: "寅月 (正月)", need: "丙火、甲木、癸水", desc: "《滴天髓》：己土卑濕，初春寒濕，專用丙火解凍，癸水潤土。" },
+        { month: "卯月 (二月)", need: "丙火、甲木、癸水", desc: "殺旺身衰，專用丙火化殺生己土。" },
+        { month: "辰月 (三月)", need: "丙火、甲木、癸水", desc: "劫財當權，先用丙火，次取甲木疏土。" },
+        { month: "巳月 (四月)", need: "癸水、丙火", desc: "火旺土焦，專用癸水潤土降溫。" },
+        { month: "午月 (五月)", need: "癸水、壬水", desc: "田園乾涸，急需癸水滋潤，無水萬物枯死。" },
+        { month: "未月 (六月)", need: "癸水、丙火", desc: "燥土當權，專用癸水潤土，丙火為輔。" },
+        { month: "申月 (七月)", need: "丙火、癸水", desc: "金旺洩土，專用丙火生土溫局，癸水潤土。" },
+        { month: "酉月 (八月)", need: "丙火、癸水", desc: "食神當權，先用丙火溫土生身，癸水滋潤。" },
+        { month: "戌月 (九月)", need: "甲木、丙火、癸水", desc: "土厚塞滯，先用甲木疏土，次用丙火癸水。" },
+        { month: "亥月 (十月)", need: "丙火、甲木", desc: "《滴天髓》：己土生亥，寒濕之極，專用丙火解凍。" },
+        { month: "子月 (十一月)", need: "丙火、甲木", desc: "嚴寒冰凍，專用丙火驅寒暖局。" },
+        { month: "丑月 (十二月)", need: "丙火、甲木", desc: "濕寒凍土，非丙火不能溫養田園。" }
+      ],
+      "庚": [
+        { month: "寅月 (正月)", need: "丁火、甲木、丙火", desc: "《滴天髓》：庚金帶殺，剛健為最。初春金木皆弱，用丁火鍛金，甲木引火。" },
+        { month: "卯月 (二月)", need: "丁火、甲木、庚金", desc: "財旺身弱，先用丁火鍛金，甲木引丁。" },
+        { month: "辰月 (三月)", need: "甲木、丁火、壬水", desc: "土旺金埋，先用甲木疏土，次用丁火鍛金。" },
+        { month: "巳月 (四月)", need: "壬水、癸水、丙火", desc: "長生之地火旺，專用壬水淬火保金。" },
+        { month: "午月 (五月)", need: "壬水、癸水、己土", desc: "火熔庚金，極需壬癸水解炎淬金，己土洩火生金。" },
+        { month: "未月 (六月)", need: "丁火、甲木、壬水", desc: "土燥金埋，用丁火鍛金，甲木疏土，壬水潤局。" },
+        { month: "申月 (七月)", need: "丁火、甲木", desc: "建祿當權最剛銳，專取丁火鍛造，甲木引火成重器。" },
+        { month: "酉月 (八月)", need: "丁火、甲木、丙火", desc: "陽刃極旺，專用丁火鍛金，丙火調節。" },
+        { month: "戌月 (九月)", need: "甲木、壬水、丁火", desc: "土厚金埋，先用甲木疏土，壬水淘洗。" },
+        { month: "亥月 (十月)", need: "丁火、丙火、甲木", desc: "《滴天髓》：庚金水冷，專用丁火鍛金，丙火解寒。" },
+        { month: "子月 (十一月)", need: "丁火、丙火、甲木", desc: "沉寒極致，急需丙火解寒，丁火鍛金。" },
+        { month: "丑月 (十二月)", need: "丁火、丙火、甲木", desc: "寒凍濕金，專用丁火丙火解寒溫鍛。" }
+      ],
+      "辛": [
+        { month: "寅月 (正月)", need: "己土、壬水、庚金", desc: "《滴天髓》：辛金軟弱，溫潤即清。初春喜己土生身，壬水淘洗。" },
+        { month: "卯月 (二月)", need: "壬水、甲木", desc: "財旺身弱，專用壬水淘洗顯光彩。" },
+        { month: "辰月 (三月)", need: "壬水、甲木", desc: "土厚易埋金，用甲木疏土，壬水淘洗。" },
+        { month: "巳月 (四月)", need: "壬水、癸水", desc: "火旺熔金，專用壬水淘洗降溫。" },
+        { month: "午月 (五月)", need: "壬水、己土", desc: "丁火當權，極需壬水淘洗，己土化火生金。" },
+        { month: "未月 (六月)", need: "壬水、庚金", desc: "土燥金埋，專用壬水淘洗，庚金幫身。" },
+        { month: "申月 (七月)", need: "壬水、甲木", desc: "庚金乘權，專取壬水淘洗，金白水清。" },
+        { month: "酉月 (八月)", need: "壬水、甲木", desc: "建祿專旺，專用壬水淘洗秀氣。" },
+        { month: "戌月 (九月)", need: "壬水、甲木", desc: "土厚埋金，先用甲木疏土，次用壬水。" },
+        { month: "亥月 (十月)", need: "壬水、丙火", desc: "《滴天髓》：辛金水冷，專用丙火解凍，壬水淘洗。" },
+        { month: "子月 (十一月)", need: "丙火、壬水", desc: "寒凍極致，專用丙火暖局，壬水淘洗。" },
+        { month: "丑月 (十二月)", need: "丙火、壬水", desc: "濕寒凍金，先取丙火解凍，次用壬水。" }
+      ],
+      "壬": [
+        { month: "寅月 (正月)", need: "戊土、辛金、丙火", desc: "《滴天髓》：壬水通河，春水汪洋，用戊土築堤，辛金發水源。" },
+        { month: "卯月 (二月)", need: "戊土、辛金", desc: "木旺洩水，先用戊土止水，辛金發源。" },
+        { month: "辰月 (三月)", need: "甲木、壬水", desc: "土旺水塞，用甲木疏土，壬水幫身。" },
+        { month: "巳月 (四月)", need: "壬水、癸水、庚金", desc: "火旺水涸，極需壬癸水幫身，庚金發水源。" },
+        { month: "午月 (五月)", need: "癸水、庚金、辛金", desc: "丁火當權，專用癸水解炎，庚辛金發源。" },
+        { month: "未月 (六月)", need: "辛金、甲木、癸水", desc: "土燥水涸，用辛金發源，甲木疏土。" },
+        { month: "申月 (七月)", need: "戊土、丁火", desc: "水生申月浩蕩，專用戊土作堤防，丁火鍛金。" },
+        { month: "酉月 (八月)", need: "甲木、丙火", desc: "金旺水盈，用甲木洩秀，丙火暖局。" },
+        { month: "戌月 (九月)", need: "甲木、丙火", desc: "土旺水塞，專用甲木疏土，丙火照耀。" },
+        { month: "亥月 (十月)", need: "戊土、丙火", desc: "《滴天髓》：建祿當權水勢旺，專用戊土作堤防，丙火解寒。" },
+        { month: "子月 (十一月)", need: "戊土、丙火", desc: "陽刃水極旺且嚴寒，專用戊土築堤，丙火解凍。" },
+        { month: "丑月 (十二月)", need: "丙火、甲木", desc: "上半月用丙火解凍，下半月用甲木疏土。" }
+      ],
+      "癸": [
+        { month: "寅月 (正月)", need: "辛金、丙火", desc: "《滴天髓》：癸水至弱，達於天津。初春木旺水洩，專用辛金發源，丙火暖局。" },
+        { month: "卯月 (二月)", need: "辛金、庚金", desc: "乙木當權洩水，專用辛金發源。" },
+        { month: "辰月 (三月)", need: "丙火、辛金、甲木", desc: "土旺水涸，專用辛金發源，丙火照耀。" },
+        { month: "巳月 (四月)", need: "辛金、壬水", desc: "火旺水蒸發，專用辛金發源，壬水幫扶。" },
+        { month: "午月 (五月)", need: "庚金、辛金、壬水", desc: "火炎水涸，急需庚辛金發源、壬癸水解炎。" },
+        { month: "未月 (六月)", need: "庚金、辛金", desc: "土燥水乾，專用庚辛金發水源。" },
+        { month: "申月 (七月)", need: "丁火、丙火", desc: "母旺子相，水氣充足，專用丁火製金。" },
+        { month: "酉月 (八月)", need: "辛金、丙火", desc: "辛金當權，用丙火溫局，辛金發源。" },
+        { month: "戌月 (九月)", need: "辛金、甲木", desc: "土旺水塞，用辛金發源，甲木疏土。" },
+        { month: "亥月 (十月)", need: "丙火、辛金", desc: "《滴天髓》：癸水旺於冬，嚴寒凍結，專用丙火解凍。" },
+        { month: "子月 (十一月)", need: "丙火、辛金", desc: "建祿冰凍，專用丙火驅寒解凍發揮水性。" },
+        { month: "丑月 (十二月)", need: "丙火、通根天干", desc: "濕寒冰凍極致，非丙火不能解凍。" }
+      ]
+    };
+
+    const SHENSHA_STEM_DATA = [
+      { stem: "甲 (陽木)", tianyi: "丑、未", wenchang: "巳", yangren: "卯", lu: "寅", hongyan: "午" },
+      { stem: "乙 (陰木)", tianyi: "子、申", wenchang: "午", yangren: "辰", lu: "卯", hongyan: "申" },
+      { stem: "丙 (陽火)", tianyi: "亥、酉", wenchang: "申", yangren: "午", lu: "巳", hongyan: "寅" },
+      { stem: "丁 (陰火)", tianyi: "亥、酉", wenchang: "酉", yangren: "未", lu: "午", hongyan: "未" },
+      { stem: "戊 (陽土)", tianyi: "丑、未", wenchang: "申", yangren: "午", lu: "巳", hongyan: "辰" },
+      { stem: "己 (陰土)", tianyi: "子、申", wenchang: "酉", yangren: "未", lu: "午", hongyan: "辰" },
+      { stem: "庚 (陽金)", tianyi: "丑、未", wenchang: "亥", yangren: "酉", lu: "申", hongyan: "戌" },
+      { stem: "辛 (陰金)", tianyi: "寅、午", wenchang: "子", yangren: "戌", lu: "酉", hongyan: "酉" },
+      { stem: "壬 (陽水)", tianyi: "卯、巳", wenchang: "寅", yangren: "子", lu: "亥", hongyan: "子" },
+      { stem: "癸 (陰水)", tianyi: "卯、巳", wenchang: "卯", yangren: "丑", lu: "子", hongyan: "申" }
+    ];
+
+    const SHENSHA_BRANCH_DATA = [
+      { group: "申子辰 (水局)", branches: "申、子、辰", taohua: "酉", yima: "寅", huagai: "辰", jiangxing: "子", jiesha: "巳" },
+      { group: "亥卯未 (木局)", branches: "亥、卯、未", taohua: "子", yima: "巳", huagai: "未", jiangxing: "卯", jiesha: "申" },
+      { group: "寅午戌 (火局)", branches: "寅、午、戌", taohua: "卯", yima: "申", huagai: "戌", jiangxing: "午", jiesha: "亥" },
+      { group: "巳酉丑 (金局)", branches: "巳、酉、丑", taohua: "午", yima: "亥", huagai: "丑", jiangxing: "酉", jiesha: "寅" }
+    ];
+
+    const SHENSHA_DATA = [
+      { name: "天乙貴人", check: "甲戊庚見丑未，乙己見子申，丙丁見亥酉，六辛見午寅，壬癸見卯巳", desc: "命中最吉之神，主聰明智慧、逢凶化吉、遇難呈祥、易得貴人提攜。" },
+      { name: "文昌貴人", check: "甲乙巳午報君求，丙戊申宮丁己酉，庚豬辛鼠壬逢虎，癸人見兔入雲梯", desc: "主聰敏過人、好學不倦、利考學功名、文章出眾。" },
+      { name: "桃花 (鹹池)", check: "申子辰見酉，亥卯未見子，寅午戌見卯，巳酉丑見午", desc: "主異性緣佳、風流多情、藝術美感；若帶凶煞則易招桃花劫。" },
+      { name: "驛馬", check: "申子辰見寅，亥卯未見巳，寅午戌見申，巳酉丑見亥", desc: "主奔波遷徙、出外發展、職業變動、遠行旅遊、利貿易奔波。" },
+      { name: "羊刃", check: "甲卯乙辰丙午丁未，戊午己未庚酉辛戌，壬子癸丑", desc: "極旺之氣，主剛強果決、勇猛；喜食傷或官殺制，無制主傷災性急。" },
+      { name: "將星", check: "申子辰見子，亥卯未見卯，寅午戌見午，巳酉丑見酉", desc: "主掌權司令、領導才能、具威嚴與組織能力。" },
+      { name: "華蓋", check: "申子辰見辰，亥卯未見未，寅午戌見戌，巳酉丑見丑", desc: "主孤高聰慧、對宗教哲學命理具極高悟性、喜藝術孤獨。" },
+      { name: "劫煞", check: "申子辰見巳，亥卯未見申，寅午戌見亥，巳酉丑見寅", desc: "主突發性破耗、競爭壓力；若為喜用則果斷有威嚴。" },
+      { name: "空亡 (旬空)", check: "甲子旬空戌亥，甲戌旬空申酉，甲申旬空午未，甲午旬空辰巳，甲辰旬空寅卯，甲寅旬空子丑", desc: "主虛無、減半、事倍功半；吉神逢空吉不顯，凶煞逢空凶減半。" }
+    ];
+
+    // --- RENDER FUNCTIONS ---
+
+    function switchTab(tabId) {
+      const sections = ['paipan', 'shishen', 'tiangan', 'wuxing', 'yongshen', 'changsheng', 'shensha', 'helper'];
+      sections.forEach(s => {
+        document.getElementById(`sec-${s}`).classList.add('hidden');
+        document.getElementById(`tab-${s}`).classList.remove('active-tab');
+      });
+
+      document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-${tabId}`).classList.add('active-tab');
+
+      if(tabId === 'helper') {
+        calculateHelper();
+      }
+    }
+
+    function renderShishen() {
+      const grid = document.getElementById('shishenGrid');
+      grid.innerHTML = SHISHEN_DATA.map(item => `
+        <div class="bg-white rounded-2xl p-5 shadow-md border border-stone-200 hover:shadow-lg transition">
+          <div class="flex justify-between items-start mb-3 border-b pb-2">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid ${item.icon}"></i>
+              </div>
+              <div>
+                <h3 class="font-serif font-bold text-xl text-stone-900">${item.name}</h3>
+                <span class="text-xs text-amber-800 font-semibold">${item.type}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2 text-xs leading-relaxed">
+            <div>
+              <span class="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded mr-1">正面性情</span>
+              <p class="text-stone-700 mt-0.5">${item.charPositive}</p>
+            </div>
+            <div>
+              <span class="font-bold text-rose-800 bg-rose-50 px-2 py-0.5 rounded mr-1">負面 / 過旺性情</span>
+              <p class="text-stone-700 mt-0.5">${item.charNegative}</p>
+            </div>
+            <div>
+              <span class="font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded mr-1">六親代表 (正面應象)</span>
+              <p class="text-stone-700 mt-0.5">${item.kinPositive}</p>
+            </div>
+            <div>
+              <span class="font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded mr-1">六親負面 / 破局應象</span>
+              <p class="text-stone-700 mt-0.5">${item.kinNegative}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderTianganBody() {
+      const tbody = document.getElementById('tianganBodyTable');
+      tbody.innerHTML = TIANGAN_BODY.map((item, index) => `
+        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-stone-50'} hover:bg-amber-50/50 transition">
+          <td class="p-3 font-serif font-bold text-lg text-amber-900 border-b">${item.stem}</td>
+          <td class="p-3 text-xs font-semibold text-stone-600 border-b">${item.element}</td>
+          <td class="p-3 text-xs text-stone-800 font-medium border-b">${item.outer}</td>
+          <td class="p-3 text-xs text-stone-800 font-medium border-b">${item.inner}</td>
+          <td class="p-3 text-xs text-rose-800 font-medium border-b leading-relaxed">${item.disease}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderWuxing() {
+      const container = document.getElementById('wuxingCards');
+      container.innerHTML = WUXING_DATA.map(item => `
+        <div class="bg-white rounded-xl p-4 shadow-md border border-stone-200 flex flex-col justify-between">
+          <div>
+            <h3 class="font-serif font-bold text-lg text-stone-900 mb-2 border-b pb-1 flex items-center justify-between">
+              <span>五行 · ${item.element}</span>
+            </h3>
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="font-bold text-amber-800 block mb-0.5">心性本質：</span>
+                <p class="text-stone-700 leading-snug">${item.nature}</p>
+              </div>
+              <div>
+                <span class="font-bold text-amber-800 block mb-0.5">適合行業與領域：</span>
+                <p class="text-stone-700 leading-snug">${item.field}</p>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-stone-100 text-xs text-stone-500">
+            <span class="font-bold text-stone-700">職業性格特質：</span>${item.personality}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderYongshenTable() {
+      const stem = document.getElementById('yongshenStemSelect').value;
+      const data = YONGSHEN_MAP[stem];
+      
+      document.getElementById('yongshenTitle').innerText = `天干【${stem}】在十二月令之《滴天髓》專用神速查表`;
+      
+      const grid = document.getElementById('yongshenGrid');
+      grid.innerHTML = data.map(item => `
+        <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 shadow-sm hover:border-amber-400 transition">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-bold bg-amber-900 text-amber-100 px-2 py-0.5 rounded">${item.month}</span>
+          </div>
+          <div class="mt-2 text-sm font-bold text-emerald-800 border-b border-stone-200 pb-1">特定用神：${item.need}</div>
+          <p class="text-xs text-stone-700 mt-2 leading-relaxed">${item.desc}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderChangshengTable() {
+      const tbody = document.getElementById('changshengTableBody');
+      const stems = ["甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"];
+      
+      tbody.innerHTML = stems.map(stem => {
+        const row = CHANGSHENG_TABLE[stem];
+        return `
+          <tr class="hover:bg-amber-50/50">
+            <td class="p-2 font-serif font-bold bg-stone-100 border text-amber-900">${stem}</td>
+            ${row.map(val => {
+              let colorClass = "text-stone-700";
+              if(["帝旺", "臨官", "長生"].includes(val)) colorClass = "text-emerald-700 font-bold bg-emerald-50/50";
+              if(["死", "墓", "絕"].includes(val)) colorClass = "text-rose-700 bg-rose-50/30";
+              return `<td class="p-2 border ${colorClass}">${val}</td>`;
+            }).join('')}
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderShenshaTables() {
+      const stemTbody = document.getElementById('shenshaStemTableBody');
+      stemTbody.innerHTML = SHENSHA_STEM_DATA.map((row, idx) => `
+        <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-stone-50'} hover:bg-amber-50/50">
+          <td class="p-2 border font-serif font-bold text-amber-900">${row.stem}</td>
+          <td class="p-2 border font-semibold text-amber-800 bg-amber-50/30">${row.tianyi}</td>
+          <td class="p-2 border font-semibold text-emerald-800">${row.wenchang}</td>
+          <td class="p-2 border font-semibold text-rose-800">${row.yangren}</td>
+          <td class="p-2 border text-blue-800 font-semibold">${row.lu}</td>
+          <td class="p-2 border text-purple-800 font-semibold">${row.hongyan}</td>
+        </tr>
+      `).join('');
+
+      const branchTbody = document.getElementById('shenshaBranchTableBody');
+      branchTbody.innerHTML = SHENSHA_BRANCH_DATA.map((row, idx) => `
+        <tr class="${idx % 2 === 0 ? 'bg-white' : 'bg-stone-50'} hover:bg-amber-50/50">
+          <td class="p-2 border font-serif font-bold text-stone-900">${row.group}</td>
+          <td class="p-2 border text-stone-600 font-mono">${row.branches}</td>
+          <td class="p-2 border font-semibold text-rose-800 bg-rose-50/30">${row.taohua}</td>
+          <td class="p-2 border font-semibold text-blue-800">${row.yima}</td>
+          <td class="p-2 border font-semibold text-purple-800">${row.huagai}</td>
+          <td class="p-2 border font-semibold text-amber-900">${row.jiangxing}</td>
+          <td class="p-2 border text-stone-700 font-semibold">${row.jiesha}</td>
+        </tr>
+      `).join('');
+
+      const container = document.getElementById('shenshaCards');
+      container.innerHTML = SHENSHA_DATA.map(item => `
+        <div class="bg-white p-4 rounded-xl shadow-md border border-stone-200 space-y-2">
+          <div class="flex justify-between items-center border-b pb-1">
+            <h3 class="font-serif font-bold text-amber-900 text-base">${item.name}</h3>
+            <i class="fa-solid fa-star text-amber-500 text-xs"></i>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-stone-500 block">口訣與規則：</span>
+            <p class="text-xs text-stone-800 font-mono bg-stone-100 p-1.5 rounded mt-0.5">${item.check}</p>
+          </div>
+          <div>
+            <span class="text-xs font-bold text-stone-500 block">命理特質與吉凶：</span>
+            <p class="text-xs text-stone-700 leading-relaxed mt-0.5">${item.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // --- HELPER LOGIC ---
+    function calculateHelper() {
+      const dayStem = document.getElementById('helperDayStem').value;
+      const monthBranch = document.getElementById('helperMonthBranch').value;
+
+      const branchIdx = BRANCHES.indexOf(monthBranch);
+      const changshengStatus = CHANGSHENG_TABLE[dayStem][branchIdx];
+      document.getElementById('resChangsheng').innerText = `${changshengStatus}`;
+      
+      let changshengDesc = "";
+      if(["帝旺", "臨官", "冠帶", "長生"].includes(changshengStatus)) changshengDesc = "日主得月令氣勢旺盛，身強機率高。";
+      else if(["衰", "病", "養", "胎"].includes(changshengStatus)) changshengDesc = "日主處於平平或漸衰階段，需參照天干幫扶。";
+      else changshengDesc = "日主處休囚死絕之地，極需印星或比劫生扶。";
+      document.getElementById('resChangshengDesc').innerText = changshengDesc;
+
+      const yongshenList = YONGSHEN_MAP[dayStem];
+      const matchedYongshen = yongshenList[branchIdx];
+
+      document.getElementById('resYongshen').innerText = matchedYongshen.need;
+      document.getElementById('resYongshenDetail').innerText = matchedYongshen.desc;
+
+      const shenshaMap = {
+        "甲": "貴人: 丑未 | 文昌: 巳 | 羊刃: 卯 | 祿神: 寅",
+        "乙": "貴人: 子申 | 文昌: 午 | 羊刃: 辰 | 祿神: 卯",
+        "丙": "貴人: 亥酉 | 文昌: 申 | 羊刃: 午 | 祿神: 巳",
+        "丁": "貴人: 亥酉 | 文昌: 酉 | 羊刃: 未 | 祿神: 午",
+        "戊": "貴人: 丑未 | 文昌: 申 | 羊刃: 午 | 祿神: 巳",
+        "己": "貴人: 子申 | 文昌: 酉 | 羊刃: 未 | 祿神: 午",
+        "庚": "貴人: 丑未 | 文昌: 亥 | 羊刃: 酉 | 祿神: 申",
+        "辛": "貴人: 寅午 | 文昌: 子 | 羊刃: 戌 | 祿神: 酉",
+        "壬": "貴人: 卯巳 | 文昌: 寅 | 羊刃: 子 | 祿神: 亥",
+        "癸": "貴人: 卯巳 | 文昌: 卯 | 羊刃: 丑 | 祿神: 子"
+      };
+      
+      document.getElementById('resShensha').innerHTML = `
+        <div><i class="fa-solid fa-circle-check text-amber-600 mr-1"></i>${shenshaMap[dayStem]}</div>
+        <div class="mt-1 text-stone-500">（註：桃花/驛馬需結合年支或日支參照）</div>
+      `;
+
+      const bodyInfo = TIANGAN_BODY.find(t => t.stem === dayStem);
+      document.getElementById('resStemName').innerText = dayStem;
+      document.getElementById('resHealthDetail').innerHTML = `
+        <b>體表部位：</b>${bodyInfo.outer} <br>
+        <b>內部器官：</b>${bodyInfo.inner} <br>
+        <span class="text-rose-800"><b>極端失衡病理與積聚異變：</b>${bodyInfo.disease}</span>
+      `;
+    }
+
+    // --- GLOBAL SEARCH ---
+    function handleGlobalSearch() {
+      const query = document.getElementById('globalSearch').value.toLowerCase().trim();
+      if(!query) return;
+
+      if(query.includes("貴人") || query.includes("神煞") || query.includes("桃花") || query.includes("羊刃")) {
+        switchTab('shensha');
+      } else if(query.includes("木") || query.includes("火") || query.includes("土") || query.includes("金") || query.includes("水")) {
+        switchTab('wuxing');
+      } else if(query.includes("長生") || query.includes("帝旺")) {
+        switchTab('changsheng');
+      } else if(query.includes("腫瘤") || query.includes("病") || query.includes("器官") || query.includes("積聚")) {
+        switchTab('tiangan');
+      } else if(query.includes("官") || query.includes("印") || query.includes("財") || query.includes("殺") || query.includes("傷")) {
+        switchTab('shishen');
+      }
+    }
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('paipanDate').value = today;
+      document.getElementById('targetDate').value = today;
+
+      renderShishen();
+      renderTianganBody();
+      renderWuxing();
+      renderYongshenTable();
+      renderChangshengTable();
+      renderShenshaTables();
+      calculateHelper();
+    };
+  </script>
+</body>
+</html>
